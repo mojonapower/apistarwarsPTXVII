@@ -8,9 +8,10 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User
-#from models import Person
+from models import db, User, Favorite
 
+
+#ACA SON LAS CONFUGURACIONES INICIALES DE NUESTRO POYECTO
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DB_CONNECTION_STRING')
@@ -19,6 +20,7 @@ MIGRATE = Migrate(app, db)
 db.init_app(app)
 CORS(app)
 setup_admin(app)
+#FIN CONFIGURACIONES INICIALES
 
 # Handle/serialize errors like a JSON object
 @app.errorhandler(APIException)
@@ -32,12 +34,24 @@ def sitemap():
 
 @app.route('/user', methods=['GET'])
 def handle_hello():
+    #en la variable all_users estoy consultando a la base de datos por todos los registros de la tabla Users
+    all_users = User.query.all()
+    #estoy almacenando en una lista list()
+    #y realizando un map (), donde un map ejecuta una instruccion por cada registro de usuario en mi base de datos 
+    #y lambda es lo mismo que una funcion ()=>{} que ejecuta por cada registro de la base de datos (X) y ejecutara su funcion serialize() para devolver los datos que quiero
+    #EN RESUMEN ALMACENAREMOS EN UNA LISTA TODOS LOS REGISTROS DE LA BASE DE DATOS Y RETORNARÁ LA INFORMACION COMO LO DEFINIMOS EN SERIALIZE
+    all_users = list(map(lambda x: x.serialize(), all_users))
+    #retorno todos los usuarios
+    return jsonify(all_users), 200
 
-    response_body = {
-        "msg": "Hello, this is your GET /user response "
-    }
+#ruta que mostrara todos mis favoritos
+@app.route('/favoritos', methods=['GET'])
+def allFavoritos():
+    resultado = {"Mensaje": "Aca iran todos los favoritos"}
+    return jsonify(resultado)
 
-    return jsonify(response_body), 200
+
+
 
 # this only runs if `$ python src/main.py` is executed
 if __name__ == '__main__':
