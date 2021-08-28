@@ -47,10 +47,10 @@ def handle_hello():
 #ruta que mostrara todos mis favoritos
 @app.route('/favoritos', methods=['GET'])
 def allFavoritos():
-    resultado = {"Mensaje": "Aca iran todos los favoritos"}
-    return jsonify(resultado)
+    all_favoritos = Favorite.query.all()
+    all_favoritos = list(map(lambda x: x.serialize(), all_favoritos))
 
-
+    return jsonify(all_favoritos)
 
 
 # this only runs if `$ python src/main.py` is executed

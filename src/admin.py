@@ -1,9 +1,9 @@
 import os
 from flask_admin import Admin
-from models import db, User
+from models import db, User,Favorite, Personajes
 from flask_admin.contrib.sqla import ModelView
 
-
+#el admin esta encargado de proveernos una interfaz que nos permita agregar, modificar o eliminar elementos de la base de datos
 def setup_admin(app):
     app.secret_key = os.environ.get('FLASK_APP_KEY', 'sample key')
     app.config['FLASK_ADMIN_SWATCH'] = 'cerulean'
@@ -12,6 +12,9 @@ def setup_admin(app):
     
     # Add your models here, for example this is how we add a the User model to the admin
     admin.add_view(ModelView(User, db.session))
+    admin.add_view(ModelView(Favorite, db.session))
+    admin.add_view(ModelView(Personajes, db.session))
+
 
 
     
